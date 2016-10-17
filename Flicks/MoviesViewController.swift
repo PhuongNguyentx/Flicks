@@ -48,21 +48,20 @@ class MoviesViewController: UIViewController,UITableViewDataSource, UITableViewD
                                 MBProgressHUD.hide(for: self.view, animated: true)
                                 if response == nil {
                                     self.showAlert(alert: "Network Error")
-                                }
-                                if let data = dataOrNil {
-                                    if let responseDictionary = try! JSONSerialization.jsonObject(
-                                        with: data, options:[]) as? NSDictionary {
-                                        //print("response: \(responseDictionary)")
-                                        self.movies = responseDictionary["results"] as! [NSDictionary]
-                                        //print(self.movies)
+                                } else {
+                                    if let data = dataOrNil {
+                                        if let responseDictionary = try! JSONSerialization.jsonObject(
+                                            with: data, options:[]) as? NSDictionary {
+                                            //print("response: \(responseDictionary)")
+                                            self.movies = responseDictionary["results"] as! [NSDictionary]
+                                            //print(self.movies)
                                             self.tableView.reloadData()
+                                            self.refreshControl.endRefreshing()
+                                        }
+                                    } else {
+                                    self.showAlert(alert: "Something wrong with data")
                                     }
                                 }
-    
-                                if error != nil{
-                                    self.showAlert(alert: "Something wrong with data")
-                                }
-                                self.refreshControl.endRefreshing()
             })
         task.resume()
     }
